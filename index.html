@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Johnson Taxi Services</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f2f2f5;color:#1a1a1a;min-height:100vh}
+.app{max-width:420px;min-height:100vh;margin:0 auto;background:#f2f2f5}
+.hdr{background:#1a1a2e;padding:1rem 1rem 0;position:sticky;top:0;z-index:10}
+.hdr-top{display:flex;align-items:center;gap:10px;margin-bottom:0.75rem}
+.logo{width:36px;height:36px;background:#f5c518;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;color:#1a1a2e}
+.brand-t{font-size:15px;font-weight:600;color:#fff}
+.brand-s{font-size:11px;color:#a0a0c0;margin-top:1px}
+.tabs{display:flex;border-bottom:1px solid rgba(255,255,255,0.12)}
+.tab{flex:1;padding:0.55rem 0.25rem;font-size:11.5px;color:#a0a0c0;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;font-family:inherit;text-align:center}
+.tab.on{color:#f5c518;border-bottom-color:#f5c518}
+.sec{display:none}.sec.on{display:block}
+.rides-top{padding:1rem 1rem 0.5rem;display:flex;justify-content:space-between;align-items:center}
+.rides-title{font-size:11px;font-weight:600;color:#888;letter-spacing:0.06em;text-transform:uppercase}
+.filt{font-size:12px;padding:4px 8px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;font-family:inherit}
+.summary-bar{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;padding:0 1rem 0.75rem}
+.scard{background:#fff;border-radius:8px;padding:0.75rem 1rem;border:1px solid #e8e8ec}
+.scard-l{font-size:11px;color:#888;margin-bottom:2px}
+.scard-v{font-size:18px;font-weight:600;color:#1a1a1a}
+.scard-v.gold{color:#9a7500}
+.ride-row{display:flex;align-items:center;padding:0.9rem 1rem;border-bottom:1px solid #ebebed;background:#fff;gap:12px;cursor:pointer}
+.ride-row:first-child{border-top:1px solid #ebebed}
+.ride-row:active{background:#f8f8f8}
+.av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0}
+.av-blue{background:#d0e8fd;color:#0c447c}
+.av-amber{background:#faeeda;color:#854f0b}
+.av-teal{background:#d0f0e4;color:#085041}
+.av-purple{background:#e8e6fc;color:#3c3489}
+.ride-info{flex:1;min-width:0}
+.ride-name{font-size:14px;font-weight:600;color:#1a1a1a}
+.ride-meta{font-size:12px;color:#888;margin-top:2px}
+.ride-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.amt-big{font-size:16px;font-weight:600;color:#9a7500}
+.sbadge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.s-paid{background:#eaf3de;color:#3b6d11}
+.s-pend{background:#faeeda;color:#854f0b}
+.ride-detail{display:none;background:#f8f8f8;border-bottom:1px solid #ebebed;padding:0.85rem 1rem 0.85rem 68px}
+.ride-detail.on{display:block}
+.det-title{font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:#888;margin-bottom:0.5rem}
+.det-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid #ececec}
+.det-row:last-of-type{border-bottom:none}
+.det-l{color:#888}
+.det-v{color:#1a1a1a;font-weight:600}
+.det-v.green{color:#3b6d11}
+.det-actions{display:flex;gap:8px;margin-top:0.85rem}
+.btn-sm-edit{flex:1;padding:7px;font-size:12px;font-weight:600;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a2e;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px}
+.btn-sm-del{flex:1;padding:7px;font-size:12px;font-weight:600;border:1px solid #f5c0c0;border-radius:8px;background:#fff5f5;color:#a32d2d;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px}
+.empty{text-align:center;padding:3rem 1rem;color:#aaa}
+.empty .ti{font-size:42px;margin-bottom:0.6rem;display:block}
+.empty p{font-size:13px}
+.form-wrap{padding:1rem}
+.frm{background:#fff;border:1px solid #e8e8ec;border-radius:12px;padding:1.25rem}
+.frm-title{font-size:14px;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:6px;color:#1a1a2e}
+.fld{margin-bottom:0.9rem}
+.fld label{display:block;font-size:12px;color:#555;margin-bottom:5px;font-weight:500}
+.fld input,.fld select{width:100%;padding:0.6rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fafafa;color:#1a1a1a;font-family:inherit}
+.fld input:focus,.fld select:focus{outline:none;border-color:#f5c518;background:#fff}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.cur-wrap{position:relative}
+.cur-wrap input{padding-right:2rem}
+.cur-sym{position:absolute;right:0.8rem;top:50%;transform:translateY(-50%);font-size:13px;color:#aaa;pointer-events:none}
+.btn-save{width:100%;padding:0.75rem;background:#f5c518;color:#1a1a2e;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-top:0.5rem;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-save:active{transform:scale(0.98)}
+.btn-ghost{width:100%;padding:0.65rem;background:#fff;color:#555;border:1px solid #ddd;border-radius:8px;font-size:13px;cursor:pointer;margin-top:0.6rem;font-family:inherit;display:none}
+.pax-toggle{display:flex;gap:8px;margin-bottom:0.85rem}
+.pax-btn{flex:1;padding:0.5rem;font-size:12px;font-weight:600;border:1px solid #ddd;border-radius:8px;background:#f8f8f8;color:#555;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px}
+.pax-btn.on{background:#1a1a2e;color:#f5c518;border-color:#1a1a2e}
+.pax-picker{display:none}
+.pax-picker.on{display:block}
+.pax-list{border:1px solid #ddd;border-radius:8px;overflow:hidden;max-height:200px;overflow-y:auto;background:#fff;margin-bottom:0.5rem}
+.pax-item{display:flex;align-items:center;gap:10px;padding:0.65rem 0.85rem;border-bottom:1px solid #f0f0f2;cursor:pointer}
+.pax-item:last-child{border-bottom:none}
+.pax-item:hover{background:#f8f8f8}
+.pax-item.selected{background:#eaf3fb}
+.pax-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.pax-item-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.pax-item-sub{font-size:11px;color:#888}
+.pax-search{width:100%;padding:0.5rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fafafa;color:#1a1a1a;font-family:inherit;margin-bottom:0.5rem}
+.pax-search:focus{outline:none;border-color:#f5c518;background:#fff}
+.pax-selected-chip{display:flex;align-items:center;gap:8px;background:#f0f8ff;border:1px solid #b5d4f4;border-radius:8px;padding:0.5rem 0.75rem;margin-bottom:0.5rem}
+.pax-chip-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.pax-chip-name{font-size:13px;font-weight:600;flex:1;color:#1a1a1a}
+.pax-chip-clear{background:none;border:none;cursor:pointer;color:#888;font-size:16px;padding:0;line-height:1}
+.rep-wrap{padding:1rem}
+.rep-box{background:#fff;border:1px solid #e8e8ec;border-radius:12px;padding:1.1rem;margin-bottom:0.75rem}
+.rep-box-title{font-size:13px;font-weight:600;color:#555;margin-bottom:0.75rem;display:flex;align-items:center;gap:6px}
+.date-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem}
+.date-row .fld{margin-bottom:0}
+.btn-run{width:100%;padding:0.65rem;background:#1a1a2e;color:#f5c518;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px}
+.rep-result{display:none}.rep-result.on{display:block}
+.rep-stats{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem}
+.rep-total{background:#f8f6e8;border:1px solid #e8e0b0;display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0.9rem;border-radius:10px;margin-bottom:0.75rem}
+.rep-total-val{font-size:17px;font-weight:700;color:#9a7500}
+.rep-rows{border:1px solid #e8e8ec;border-radius:10px;overflow:hidden;background:#fff;margin-bottom:0.75rem}
+.rep-row{display:flex;justify-content:space-between;align-items:center;padding:0.65rem 0.9rem;border-bottom:1px solid #f0f0f2}
+.rep-row:last-child{border-bottom:none}
+.rep-row-l{font-size:13px;font-weight:600;color:#1a1a1a}
+.rep-row-sub{font-size:11px;color:#888;margin-top:2px}
+.rep-row-amt{font-size:13px;font-weight:600;color:#9a7500}
+.wa-box{background:#e5ddd5;border:1px solid #ccc;border-radius:12px;overflow:hidden;margin-bottom:0.75rem}
+.wa-hdr{background:#075e54;color:#fff;padding:0.6rem 0.9rem;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.wa-bubble{background:#dcf8c6;border-radius:0 10px 10px 10px;margin:0.75rem;padding:0.75rem;font-size:12px;line-height:1.65;white-space:pre-wrap;color:#111;word-break:break-word;border:1px solid #b8e0a0}
+.wa-btns{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem}
+.btn-wa{display:flex;align-items:center;justify-content:center;gap:5px;padding:0.7rem;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-copy{background:#25d366;color:#fff}
+.btn-send{background:#075e54;color:#fff}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#f5c518;padding:0.6rem 1.25rem;border-radius:99px;font-size:13px;font-weight:600;display:none;white-space:nowrap;z-index:99}
+.toast.on{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="logo"><i class="ti ti-car"></i></div>
+      <div><div class="brand-t">Johnson Taxi Services</div><div class="brand-s">Trip Manager</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab on" onclick="showTab('rides',this)">Trips</button>
+      <button class="tab" onclick="showTab('add',this)">+ New trip</button>
+      <button class="tab" onclick="showTab('report',this)">Report</button>
+    </div>
+  </div>
+
+  <div id="sec-rides" class="sec on">
+    <div class="rides-top">
+      <span class="rides-title">Active trips</span>
+      <select class="filt" onchange="currentFilter=this.value;renderRides()">
+        <option value="all">All</option><option value="paid">Paid</option><option value="pending">Pending</option>
+      </select>
+    </div>
+    <div class="summary-bar">
+      <div class="scard"><div class="scard-l">Total rides</div><div class="scard-v" id="s-count">0</div></div>
+      <div class="scard"><div class="scard-l">Total earned</div><div class="scard-v gold" id="s-total">₪0</div></div>
+    </div>
+    <div id="rides-list"></div>
+  </div>
+
+  <div id="sec-add" class="sec">
+    <div class="form-wrap">
+      <div class="frm">
+        <div class="frm-title" id="form-title"><i class="ti ti-plus"></i> New trip</div>
+        <div class="fld">
+          <label>Passenger</label>
+          <div class="pax-toggle">
+            <button class="pax-btn on" id="btn-mode-existing" onclick="setPaxMode('existing')"><i class="ti ti-users" style="font-size:14px"></i> Choose existing</button>
+            <button class="pax-btn" id="btn-mode-new" onclick="setPaxMode('new')"><i class="ti ti-user-plus" style="font-size:14px"></i> New passenger</button>
+          </div>
+          <div class="pax-picker on" id="pax-picker-existing">
+            <div id="pax-selected-display"></div>
+            <input class="pax-search" id="pax-search" type="text" placeholder="Search passenger..." oninput="filterPaxList(this.value)">
+            <div class="pax-list" id="pax-list"></div>
+          </div>
+          <div class="pax-picker" id="pax-picker-new">
+            <input id="f-name-new" type="text" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fafafa;color:#1a1a1a;font-family:inherit" placeholder="Enter new passenger name">
+          </div>
+        </div>
+        <div class="fld"><label>Date</label><input id="f-date" type="date"></div>
+        <div class="fld"><label>Destination</label><input id="f-dest" type="text" placeholder="e.g. Tel Aviv Central"></div>
+        <div class="r2">
+          <div class="fld"><label>Amount (₪)</label><div class="cur-wrap"><input id="f-amt" type="number" placeholder="0" min="0" step="1"><span class="cur-sym">₪</span></div></div>
+          <div class="fld"><label>Status</label><select id="f-status"><option value="pending">Pending</option><option value="paid">Paid</option></select></div>
+        </div>
+        <input type="hidden" id="f-edit-id" value="">
+        <button class="btn-save" onclick="saveRide()"><i class="ti ti-check"></i> <span id="btn-lbl">Save trip</span></button>
+        <button class="btn-ghost" id="btn-cancel" onclick="cancelEdit()">Cancel edit</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sec-report" class="sec">
+    <div class="rep-wrap">
+      <div class="rep-box">
+        <div class="rep-box-title"><i class="ti ti-calendar-search"></i> Trip report</div>
+        <div class="date-row">
+          <div class="fld"><label>From</label><input id="r-from" type="date"></div>
+          <div class="fld"><label>To</label><input id="r-to" type="date"></div>
+        </div>
+        <div class="fld"><label>Passenger</label>
+          <select id="r-pax" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fafafa;color:#1a1a1a;font-family:inherit">
+            <option value="all">All passengers</option>
+          </select>
+        </div>
+        <div class="r2" style="margin-bottom:0">
+          <div class="fld" style="margin-bottom:0"><label>Status</label>
+            <select id="r-sf" style="width:100%;padding:0.6rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fafafa;color:#1a1a1a;font-family:inherit">
+              <option value="all">All</option><option value="paid">Paid only</option><option value="pending">Pending only</option>
+            </select>
+          </div>
+          <div class="fld" style="margin-bottom:0;display:flex;align-items:flex-end">
+            <button class="btn-run" onclick="runReport()"><i class="ti ti-search"></i> Generate</button>
+          </div>
+        </div>
+      </div>
+      <div class="rep-result" id="rep-result">
+        <div class="rep-stats">
+          <div class="scard"><div class="scard-l">Trips</div><div class="scard-v" id="r-count">0</div></div>
+          <div class="scard"><div class="scard-l">Paid rides</div><div class="scard-v" id="r-paid-c">0</div></div>
+          <div class="scard"><div class="scard-l">Collected</div><div class="scard-v gold" id="r-paid-amt">₪0</div></div>
+          <div class="scard"><div class="scard-l">Pending</div><div class="scard-v" id="r-pend-amt">₪0</div></div>
+        </div>
+        <div class="rep-total">
+          <span style="font-size:13px;font-weight:600;color:#555;display:flex;align-items:center;gap:6px"><i class="ti ti-receipt"></i> Period total</span>
+          <span class="rep-total-val" id="r-grand">₪0</span>
+        </div>
+        <div class="rep-rows" id="r-rows"></div>
+        <div class="wa-box">
+          <div class="wa-hdr"><i class="ti ti-brand-whatsapp"></i> WhatsApp preview</div>
+          <div class="wa-bubble" id="wa-text"></div>
+        </div>
+        <div class="wa-btns">
+          <button class="btn-wa btn-copy" onclick="copyWA()"><i class="ti ti-copy"></i> Copy text</button>
+          <button class="btn-wa btn-send" onclick="shareWA()"><i class="ti ti-brand-whatsapp"></i> Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+let rides=[];
+try{rides=JSON.parse(localStorage.getItem('jts_rides')||'[]');}catch(e){}
+let currentFilter='all',expandedIdx=null,selectedPax=null,paxMode='existing';
+const COLORS=['av-blue','av-amber','av-teal','av-purple'];
+const colorMap={};
+function getColor(n){if(!colorMap[n]){const k=Object.keys(colorMap);colorMap[n]=COLORS[k.length%COLORS.length];}return colorMap[n];}
+function save(){try{localStorage.setItem('jts_rides',JSON.stringify(rides));}catch(e){}}
+function initials(n){return n.trim().split(' ').slice(0,2).map(w=>w[0]?w[0].toUpperCase():'').join('')||'?';}
+function fmtDate(d){if(!d)return '';const p=d.split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:d;}
+function fmtAmt(a){return '₪'+parseFloat(a||0).toLocaleString('he-IL',{minimumFractionDigits:0,maximumFractionDigits:2});}
+function getPassengers(){return[...new Set(rides.map(r=>r.name).filter(Boolean))].sort();}
+
+function setPaxMode(mode){
+  paxMode=mode;
+  document.getElementById('btn-mode-existing').classList.toggle('on',mode==='existing');
+  document.getElementById('btn-mode-new').classList.toggle('on',mode==='new');
+  document.getElementById('pax-picker-existing').classList.toggle('on',mode==='existing');
+  document.getElementById('pax-picker-new').classList.toggle('on',mode==='new');
+  if(mode==='existing'){selectedPax=null;renderPaxList('');renderPaxChip();document.getElementById('pax-search').value='';}
+}
+
+function renderPaxList(filter){
+  const list=document.getElementById('pax-list');
+  const all=getPassengers();
+  const filtered=filter?all.filter(n=>n.toLowerCase().includes(filter.toLowerCase())):all;
+  if(!filtered.length){list.innerHTML='<div style="padding:0.85rem;text-align:center;font-size:13px;color:#aaa">'+(all.length?'No match found':'No passengers yet — add a new one')+'</div>';return;}
+  list.innerHTML=filtered.map(n=>{
+    const col=getColor(n);const trips=rides.filter(r=>r.name===n).length;const sel=selectedPax===n;
+    return `<div class="pax-item ${sel?'selected':''}" onclick="selectPax('${n.replace(/'/g,"\\'")}')">
+      <div class="pax-av ${col}">${initials(n)}</div>
+      <div><div class="pax-item-name">${n}</div><div class="pax-item-sub">${trips} trip${trips!==1?'s':''}</div></div>
+      ${sel?'<i class="ti ti-check" style="font-size:16px;color:#3b6d11;margin-left:auto"></i>':''}
+    </div>`;
+  }).join('');
+}
+
+function selectPax(name){selectedPax=name;renderPaxList(document.getElementById('pax-search').value);renderPaxChip();}
+
+function renderPaxChip(){
+  const el=document.getElementById('pax-selected-display');
+  if(!selectedPax){el.innerHTML='';return;}
+  const col=getColor(selectedPax);
+  el.innerHTML=`<div class="pax-selected-chip">
+    <div class="pax-chip-av ${col}">${initials(selectedPax)}</div>
+    <span class="pax-chip-name">${selectedPax}</span>
+    <button class="pax-chip-clear" onclick="clearPax()"><i class="ti ti-x" style="font-size:14px"></i></button>
+  </div>`;
+}
+
+function clearPax(){selectedPax=null;renderPaxList('');renderPaxChip();}
+function filterPaxList(val){renderPaxList(val);}
+
+function showTab(t,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('sec-'+t).classList.add('on');
+  if(el)el.classList.add('on');
+  if(t==='rides')renderRides();
+  if(t==='report')populatePaxReport();
+  if(t==='add'){const has=getPassengers().length>0;if(!has)setPaxMode('new');else{setPaxMode('existing');renderPaxList('');}}
+}
+
+function populatePaxReport(){
+  const sel=document.getElementById('r-pax');const names=getPassengers();const cur=sel.value;
+  sel.innerHTML='<option value="all">All passengers</option>';
+  names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;if(n===cur)o.selected=true;sel.appendChild(o);});
+}
+
+function renderRides(){
+  const list=document.getElementById('rides-list');
+  const filtered=rides.filter(r=>currentFilter==='all'||r.status===currentFilter);
+  const allTotal=rides.reduce((a,r)=>a+parseFloat(r.amount||0),0);
+  document.getElementById('s-count').textContent=rides.length;
+  document.getElementById('s-total').textContent=fmtAmt(allTotal);
+  if(!filtered.length){list.innerHTML='<div class="empty"><i class="ti ti-car-off"></i><p>No trips yet.</p></div>';return;}
+  const sorted=[...filtered].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  list.innerHTML=sorted.map(r=>{
+    const ri=rides.indexOf(r);const exp=expandedIdx===ri;const col=getColor(r.name);
+    return `<div>
+      <div class="ride-row" onclick="toggleExpand(${ri})">
+        <div class="av ${col}">${initials(r.name)}</div>
+        <div class="ride-info"><div class="ride-name">${r.name}</div><div class="ride-meta">${fmtDate(r.date)}${r.destination?' · '+r.destination:''}</div></div>
+        <div class="ride-right"><div class="amt-big">${fmtAmt(r.amount)}</div><span class="sbadge ${r.status==='paid'?'s-paid':'s-pend'}">${r.status==='paid'?'Paid':'Pending'}</span></div>
+      </div>
+      <div class="ride-detail ${exp?'on':''}" id="detail-${ri}">
+        <div class="det-title">Trip details</div>
+        <div class="det-row"><span class="det-l">Date</span><span class="det-v">${fmtDate(r.date)}</span></div>
+        <div class="det-row"><span class="det-l">Destination</span><span class="det-v">${r.destination||'—'}</span></div>
+        <div class="det-row"><span class="det-l">Amount</span><span class="det-v">${fmtAmt(r.amount)}</span></div>
+        <div class="det-row"><span class="det-l">Status</span><span class="det-v ${r.status==='paid'?'green':''}">${r.status==='paid'?'Paid in full':'Pending'}</span></div>
+        <div class="det-actions">
+          <button class="btn-sm-edit" onclick="event.stopPropagation();editRide(${ri})"><i class="ti ti-edit" style="font-size:13px"></i> Edit</button>
+          <button class="btn-sm-del" onclick="event.stopPropagation();deleteRide(${ri})"><i class="ti ti-trash" style="font-size:13px"></i> Delete</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleExpand(idx){expandedIdx=expandedIdx===idx?null:idx;renderRides();}
+
+function saveRide(){
+  let name='';
+  if(paxMode==='existing'){if(!selectedPax){showToast('Please select a passenger');return;}name=selectedPax;}
+  else{name=document.getElementById('f-name-new').value.trim();if(!name){showToast('Enter passenger name');return;}}
+  const date=document.getElementById('f-date').value;const amount=document.getElementById('f-amt').value;
+  const destination=document.getElementById('f-dest').value.trim();const status=document.getElementById('f-status').value;
+  if(!date||!amount){showToast('Fill in date and amount');return;}
+  const id=document.getElementById('f-edit-id').value;
+  if(id!==''){rides[parseInt(id)]={name,date,amount:parseFloat(amount),destination,status};save();showToast('Trip updated');cancelEdit();setTimeout(()=>{showTab('rides',null);document.querySelector('.tab').classList.add('on');},800);}
+  else{rides.push({name,date,amount:parseFloat(amount),destination,status});save();clearForm();showToast('Trip saved');setTimeout(()=>{showTab('rides',null);document.querySelector('.tab').classList.add('on');},800);}
+}
+
+function editRide(idx){
+  const r=rides[idx];if(!r)return;
+  document.getElementById('f-date').value=r.date||'';document.getElementById('f-dest').value=r.destination||'';
+  document.getElementById('f-amt').value=r.amount||'';document.getElementById('f-status').value=r.status||'pending';
+  document.getElementById('f-edit-id').value=idx;
+  document.getElementById('form-title').innerHTML='<i class="ti ti-edit"></i> Edit trip';
+  document.getElementById('btn-lbl').textContent='Update trip';document.getElementById('btn-cancel').style.display='block';
+  if(getPassengers().includes(r.name)){setPaxMode('existing');renderPaxList('');selectPax(r.name);}
+  else{setPaxMode('new');document.getElementById('f-name-new').value=r.name||'';}
+  showTab('add',null);document.querySelectorAll('.tab').forEach((b,i)=>{b.classList.remove('on');if(i===1)b.classList.add('on');});
+}
+
+function cancelEdit(){
+  clearForm();document.getElementById('f-edit-id').value='';
+  document.getElementById('form-title').innerHTML='<i class="ti ti-plus"></i> New trip';
+  document.getElementById('btn-lbl').textContent='Save trip';document.getElementById('btn-cancel').style.display='none';
+}
+
+function clearForm(){
+  document.getElementById('f-name-new').value='';document.getElementById('f-date').value=today;
+  document.getElementById('f-amt').value='';document.getElementById('f-dest').value='';document.getElementById('f-status').value='pending';
+  selectedPax=null;renderPaxList('');renderPaxChip();document.getElementById('pax-search').value='';
+}
+
+function deleteRide(idx){if(!confirm('Remove this trip?'))return;rides.splice(idx,1);save();expandedIdx=null;renderRides();showToast('Trip removed');}
+
+function runReport(){
+  const from=document.getElementById('r-from').value;const to=document.getElementById('r-to').value;
+  const pax=document.getElementById('r-pax').value;const sf=document.getElementById('r-sf').value;
+  if(!from||!to){showToast('Select both dates');return;}if(from>to){showToast('From must be before To');return;}
+  const results=rides.filter(r=>{
+    if(!r.date||r.date<from||r.date>to)return false;
+    if(pax!=='all'&&r.name!==pax)return false;if(sf!=='all'&&r.status!==sf)return false;return true;
+  }).sort((a,b)=>a.date.localeCompare(b.date));
+  const total=results.reduce((s,r)=>s+parseFloat(r.amount||0),0);
+  const paidAmt=results.filter(r=>r.status==='paid').reduce((s,r)=>s+parseFloat(r.amount||0),0);
+  const pendAmt=results.filter(r=>r.status==='pending').reduce((s,r)=>s+parseFloat(r.amount||0),0);
+  const paidC=results.filter(r=>r.status==='paid').length;
+  const paxLabel=pax==='all'?'All passengers':pax;
+  document.getElementById('r-count').textContent=results.length;document.getElementById('r-paid-c').textContent=paidC;
+  document.getElementById('r-paid-amt').textContent=fmtAmt(paidAmt);document.getElementById('r-pend-amt').textContent=fmtAmt(pendAmt);
+  document.getElementById('r-grand').textContent=fmtAmt(total);
+  const rowsEl=document.getElementById('r-rows');
+  if(!results.length){rowsEl.innerHTML='<div class="empty" style="padding:1.5rem"><p>No trips found.</p></div>';}
+  else{rowsEl.innerHTML=results.map((r,i)=>`
+    <div class="rep-row"><div><div class="rep-row-l">${i+1}. ${r.name}</div><div class="rep-row-sub">${fmtDate(r.date)}${r.destination?' · '+r.destination:''}</div></div>
+    <div style="text-align:right;flex-shrink:0;margin-left:8px"><div class="rep-row-amt">${fmtAmt(r.amount)}</div>
+    <span class="sbadge ${r.status==='paid'?'s-paid':'s-pend'}" style="font-size:10px;margin-top:3px;display:inline-block">${r.status==='paid'?'Paid':'Pending'}</span></div></div>`).join('');}
+  buildWA(from,to,paxLabel,results,total,paidAmt,pendAmt);
+  document.getElementById('rep-result').classList.add('on');
+}
+
+function buildWA(from,to,paxLabel,results,total,paidAmt,pendAmt){
+  let msg='🚕 *Johnson Taxi Services*\n📋 *Trip Report*\n─────────────────\n';
+  msg+='📅 '+fmtDate(from)+' → '+fmtDate(to)+'\n👤 *'+paxLabel+'*\n─────────────────\n';
+  if(!results.length){msg+='No trips found.\n';}
+  else{
+    results.forEach((r,i)=>{msg+=(i+1)+'. '+(r.status==='paid'?'✅':'⏳')+' *'+r.name+'*\n   📆 '+fmtDate(r.date)+'\n';if(r.destination)msg+='   📍 '+r.destination+'\n';msg+='   💰 '+fmtAmt(r.amount)+'\n';});
+    msg+='─────────────────\n🚗 Total: *'+results.length+' trips*\n';
+    if(paidAmt>0)msg+='✅ Collected: *'+fmtAmt(paidAmt)+'*\n';
+    if(pendAmt>0)msg+='⏳ Pending: *'+fmtAmt(pendAmt)+'*\n';
+    msg+='💵 *Grand total: '+fmtAmt(total)+'*\n';
+  }
+  msg+='─────────────────\n_Johnson Taxi Services_';
+  const el=document.getElementById('wa-text');el.textContent=msg;el._msg=msg;
+}
+function copyWA(){const msg=document.getElementById('wa-text')._msg||document.getElementById('wa-text').textContent;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(()=>showToast('Copied ✓'));}else{const ta=document.createElement('textarea');ta.value=msg;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Copied ✓');}}
+function shareWA(){const msg=document.getElementById('wa-text')._msg||document.getElementById('wa-text').textContent;window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2000);}
+
+const today=new Date().toISOString().split('T')[0];
+const firstOfMonth=today.slice(0,8)+'01';
+document.getElementById('f-date').value=today;
+document.getElementById('r-from').value=firstOfMonth;
+document.getElementById('r-to').value=today;
+if(!getPassengers().length)setPaxMode('new');else renderPaxList('');
+renderRides();
+</script>
+</body>
+</html>
